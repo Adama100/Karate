@@ -1,0 +1,29 @@
+{
+    "name": "bakay/krt",
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Adama",
+            "email": "bakayokoadama507@gmail.com"
+        }
+    ],
+    "require": {
+        "altorouter/altorouter": "^2.0",
+        "vlucas/valitron": "^1.4",
+        "guzzlehttp/guzzle": "^7.9",
+        "phpmailer/phpmailer": "^6.9",
+        "erusev/parsedown": "^1.7",
+        "intervention/image": "^3.9",
+        "twilio/sdk": "^8.3",
+        "filp/whoops": "^2.16"
+    },
+    "require-dev": {
+        "symfony/var-dumper": "^7.2",
+        "phpunit/phpunit": "^11.5",
+        "fakerphp/faker": "^1.24"
+    }
+}

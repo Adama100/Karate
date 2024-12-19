@@ -1,0 +1,68 @@
+CREATE TABLE token ()
+
+CREATE TABLE club (
+    id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL, -- Pas trop obligé ^^
+    address VARCHAR(255) NOT NULL,
+
+
+    master_name VARCHAR(255) NOT NULL,
+    master_adresse VARCHAR(255) NOT NULL
+)
+
+CREATE TABLE users (
+    id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('users', 'admin', 'super admin') DEFAULT 'users',
+    status ENUM('pratiquant', 'maitre') DEFAULT 'pratiquant',
+    avatar VARCHAR(255) DEFAULT NULL,
+    club_id INT UNSIGNED, -- Le club doit d'abord exister avant que l'user s'inscrire
+    matricule VARCHAR(255) UNIQUE DEFAULT NULL, -- Matricule unique (généré automatiquement après l'affiliation)
+    grade VARCHAR(255) DEFAULT NULL,
+    phone_number VARCHAR(255) NOT NULL, -- Demander lors du passage de la commande
+    address VARCHAR(255) NOT NULL,
+    token TEXT DEFAULT NULL,
+    sign_at DATETIME DEFAULT NULL,
+    reset_password_token TEXT DEFAULT NULL,
+    reset_password_at DATETIME DEFAULT NULL,
+    bio TEXT DEFAULT NULL,
+    chang_mail VARCHAR(255) DEFAULT NULL,
+    message_at TIMESTAMP NULL, -- Temps a attendre pour un envoyer plus de 2 messages
+    delete_requested_at DATETIME DEFAULT NULL, -- Supprimer compte
+    locked_until DATETIME DEFAULT NULL, -- Temps jusqu'auquel le compte est bloqué
+    CONSTRAINT fk_users_club
+        FOREIGN KEY (club_id)
+        REFERENCES club(id)
+        ON DELETE SET NULL
+        ON UPDATE RESTRICT -- Ici on doit savoir si le club supprimé, supprime les users
+)
+
+CREATE TABLE login_attempts (
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    user_id INT UNSIGNED,
+    attempt_time DATETIME DEFAULT CURRENT_TIMESTAMP
+)
+
+CREATE TABLE affilier (
+    id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    user_id INT UNSIGNED,
+    affilier_at DATETIME DEFAULT NULL,
+    affilier_end DATETIME DEFAULT NULL,
+    CONSTRAINT fk_affilier_users
+        FOREIGN KEY (user_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE
+        ON UPDATE RESTRICT
+)
+
+
+
+-- Index
+
+    -- Users
+    CREATE INDEX idx_users_email ON users(email);
+    CREATE INDEX idx_users_username ON users(username);
+    CREATE INDEX idx_users_sign_at ON users(sign_at)
