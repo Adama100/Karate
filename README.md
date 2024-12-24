@@ -20,4 +20,4 @@ Pour être affilier le pratiquant doit faire un abonnement de 1ans d'affiliation
 - Modification des informations d’un club : Les maîtres de clubs peuvent modifier les informations de leur propre club
 
 
-### Tous aide de votre part me ferais un réel plaisir ^^
+### Tout aide de votre part me ferais un réel plaisir ^^, et pour info supplementaire je developpe sur XAMPP
