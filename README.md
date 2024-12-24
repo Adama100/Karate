@@ -18,3 +18,6 @@ Pour être affilier le pratiquant doit faire un abonnement de 1ans d'affiliation
 - Ajout de nouveaux clubs : Les maîtres de clubs peuvent ajouter leur club
 
 - Modification des informations d’un club : Les maîtres de clubs peuvent modifier les informations de leur propre club
+
+
+### Tous aide de votre part me ferais un réel plaisir ^^
