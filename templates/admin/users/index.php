@@ -1,24 +1,24 @@
 <?php
 
 use App\App;
+use App\Domain\Auth\User;
 use App\Domain\Builder\PaginatedQuery;
 use App\Domain\Builder\QueryBuilder;
-use App\Domain\Club\Club;
 use App\Domain\Security\UserChecker;
 use App\Session;
 
 Session::getSession();
 UserChecker::AdminCheck($r->generate('login'));
 
-    $title = "Administartion | Clubs";
+    $title = "Administration | Utilisateurs";
     $pdo = App::getPDO();
 
-    $query = (new QueryBuilder($pdo, Club::class))
-        ->from('club', 'c')
+    $query = (new QueryBuilder($pdo, User::class))
+        ->from('users', 'u')
     ;
     if(!empty($_GET['q'])) {
         $query
-            ->where("c.name LIKE :name")
+            ->where("u.username LIKE :name")
             ->setParam('name', '%' . $_GET['q'] . '%');
     }
     $tableQuery = new PaginatedQuery($query, $_GET);
@@ -40,8 +40,8 @@ UserChecker::AdminCheck($r->generate('login'));
         <button class="btn btn-primary mt-2 mb-3">Rechercher</button>
     </form>
 
-    <h5 class="display-6 mb-3">Gestion des clubs</h5>
-    <a href="<?= $r->generate('admin.club.new') ?>" class="btn btn-primary mb-3">Nouveau</a>
+    <h5 class="display-6 mb-3">Gestion des utilisateurs</h5>
+    <a href="" class="btn btn-primary mb-3">Nouveau</a>
 
     <div class="table-responsive">
         <table class="table table-striped">
@@ -49,7 +49,7 @@ UserChecker::AdminCheck($r->generate('login'));
                 <tr>
                     <th>ID</th>
                     <th>Nom</th>
-                    <th>Adresse</th>
+                    <th>Email</th>
                     <th class="lead">Actions</th>
                 </tr>
             </thead>
@@ -57,13 +57,13 @@ UserChecker::AdminCheck($r->generate('login'));
                 <?php foreach($data as $c): ?>
                 <tr>
                     <td>#<?= $c->getId() ?></td>
-                    <td><?= $c->getName() ?></td>
-                    <td><?= $c->getAddress() ?></td>
+                    <td><?= $c->getUsername() ?></td>
+                    <td><?= $c->getEmail() ?></td>
                     <td class="d-flex gap-1">
-                        <form action="<?= $r->generate('admin.club.edit', ['id' => $c->getId()]) ?>" method="post">
+                        <form action="" method="post">
                             <button type="submit" class="btn btn-primary btn-sm">Editer</button>
                         </form>
-                        <form action="<?= $r->generate('admin.club.delete', ['id' => $c->getId()]) ?>" method="post" onsubmit="return confirm('Voulez vous vraiment supprimer l\'utilisateur')">
+                        <form action="" method="post" onsubmit="return confirm('Voulez vous vraiment supprimer l\'utilisateur')">
                             <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
                         </form>
                     </td>

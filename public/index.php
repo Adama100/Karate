@@ -23,13 +23,22 @@
     $r->map('GET', '/deconnexion', 'templates/auth/out', 'out');
     $r->map('GET', '/inscription/confirmer', 'templates/auth/ckeck', 'sign.check');
     $r->map('GET|POST', '/contact', 'templates/auth/contact', 'contact');
-    $r->map('GET|POST', '/mot_de_passe', 'templates/auth/forget', 'forget');
+    $r->map('GET|POST', '/mot-de-passe', 'templates/auth/forget', 'forget');
     $r->map('GET|POST', '/renitialiser', 'templates/auth/reset', 'reset');
     // Account
-    $r->map('GET|POST', '/mon-compte', 'templates/account/index', 'account');
+    $r->map('GET|POST', '/compte', 'templates/account/index', 'account');
     // Admin
     $r->map('GET', '/administration', 'templates/admin/index', 'admin');
+    // Admin Clubs
     $r->map('GET', '/administration/clubs', 'templates/admin/club/index', 'admin.clubs');
+    $r->map('GET|POST', '/administration/clubs/modifier/[i:id]', 'templates/admin/club/edit', 'admin.club.edit');
+    $r->map('GET|POST', '/administration/clubs/nouveau', 'templates/admin/club/new', 'admin.club.new');
+    $r->map('POST', '/administration/clubs/supprimer/[i:id]', 'templates/admin/club/delete', 'admin.club.delete');
+    // Admin Users
+    $r->map('GET', '/administration/utilisateurs', 'templates/admin/users/index', 'admin.users');
+    $r->map('GET|POST', '/administration/utilisateur/modifier/[i:id]', 'templates/admin/users/edit', 'admin.users.edit');
+    $r->map('GET|POST', '/administration/utilisateur/nouveau', 'templates/admin/users/new', 'admin.users.new');
+    $r->map('POST', '/administration/utilisateur/supprimer/[i:id]', 'templates/admin/users/delete', 'admin.users.delete');
 
 
 

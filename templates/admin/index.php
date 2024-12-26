@@ -18,6 +18,11 @@ UserChecker::AdminCheck($r->generate('login'));
     $users->execute();
     $users = $users->fetch()['count'];
 
+    /*
+        $usersCount = $pdo->query('SELECT COUNT(*) FROM users')->fetchColumn();
+        $clubsCount = $pdo->query('SELECT COUNT(*) FROM clubs')->fetchColumn();
+        $affiliatedCount = $pdo->query('SELECT COUNT(*) FROM users WHERE matricule IS NOT NULL')->fetchColumn();
+    */
 ?>
 
 <div class="container">
@@ -28,7 +33,7 @@ UserChecker::AdminCheck($r->generate('login'));
                 <div class="card-body">
                     Clubs
                 </div>
-                <div class="card-footer"><a href="" class="btn btn-lg btn-primary"><?= $clubs ?></a></div>
+                <div class="card-footer"><a href="<?= $r->generate('admin.clubs') ?>" class="btn btn-lg btn-primary"><?= $clubs ?></a></div>
             </div>
         </div>
         <div class="col-md-6">
@@ -36,7 +41,7 @@ UserChecker::AdminCheck($r->generate('login'));
                 <div class="card-body">
                     Utilisateurs
                 </div>
-                <div class="card-footer"><a href="" class="btn btn-lg btn-primary"><?= $users ?></a></div>
+                <div class="card-footer"><a href="<?= $r->generate('admin.users') ?>" class="btn btn-lg btn-primary"><?= $users ?></a></div>
             </div>
         </div>
     </div>

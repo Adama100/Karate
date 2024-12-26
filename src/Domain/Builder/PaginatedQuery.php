@@ -11,7 +11,7 @@ use App\Helper\URLHelper;
         private $perPage;
         private $sortable = [];
 
-        public function __construct(QueryBuilder $query, array $get, int $perPage = 3)
+        public function __construct(QueryBuilder $query, array $get, int $perPage = 15)
         {
             $this->query = $query;
             $this->get = $get;

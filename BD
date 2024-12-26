@@ -3,12 +3,14 @@ CREATE TABLE token ()
 CREATE TABLE club (
     id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(255) NOT NULL,
-    description TEXT NOT NULL, -- Pas trop obligé ^^
+    description TEXT DEFAULT NULL, -- Pas trop obligé ^^
     address VARCHAR(255) NOT NULL,
-
-
-    master_name VARCHAR(255) NOT NULL,
-    master_adresse VARCHAR(255) NOT NULL
+    master_id INT UNSIGNED,
+    CONSTRAINT fk_club_master
+        FOREIGN KEY (master_id)
+        REFERENCES users(id)
+        ON DELETE SET NULL
+        ON UPDATE RESTRICT
 )
 
 CREATE TABLE users (
@@ -16,19 +18,21 @@ CREATE TABLE users (
     username VARCHAR(255) NOT NULL UNIQUE,
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
-    role ENUM('users', 'admin', 'super admin') DEFAULT 'users',
+    age INT NOT NULL,
     status ENUM('pratiquant', 'maitre') DEFAULT 'pratiquant',
     avatar VARCHAR(255) DEFAULT NULL,
-    club_id INT UNSIGNED, -- Le club doit d'abord exister avant que l'user s'inscrire
+    club_id INT UNSIGNED,
     matricule VARCHAR(255) UNIQUE DEFAULT NULL, -- Matricule unique (généré automatiquement après l'affiliation)
     grade VARCHAR(255) DEFAULT NULL,
-    phone_number VARCHAR(255) NOT NULL, -- Demander lors du passage de la commande
+    phone_number VARCHAR(255) NOT NULL,
     address VARCHAR(255) NOT NULL,
+    bio TEXT DEFAULT NULL,
+
+    role ENUM('users', 'admin', 'super admin') DEFAULT 'users',
     token TEXT DEFAULT NULL,
     sign_at DATETIME DEFAULT NULL,
     reset_password_token TEXT DEFAULT NULL,
     reset_password_at DATETIME DEFAULT NULL,
-    bio TEXT DEFAULT NULL,
     chang_mail VARCHAR(255) DEFAULT NULL,
     message_at TIMESTAMP NULL, -- Temps a attendre pour un envoyer plus de 2 messages
     delete_requested_at DATETIME DEFAULT NULL, -- Supprimer compte
@@ -49,8 +53,8 @@ CREATE TABLE login_attempts (
 CREATE TABLE affilier (
     id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     user_id INT UNSIGNED,
-    affilier_at DATETIME DEFAULT NULL,
-    affilier_end DATETIME DEFAULT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT fk_affilier_users
         FOREIGN KEY (user_id)
         REFERENCES users(id)

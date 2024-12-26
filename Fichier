@@ -8,25 +8,34 @@ npm run dev
 ./node_modules/.bin/mjml --watch mail.mjml
 php -S localhost:8000 -t public
 ./bin/mailpit
+git remote add origin git@github.com:Adama100/Karate.git
+git branch -M main
+git push -u origin main
 
 
 
 ## Fonctionnalités principales du système
 
-- Inscription des pratiquants : Les pratiquants peuvent s'inscrire avec les informations suivantes : nom, prénom, email, mot de passe, âge, ceinture actuelle, et type d'utilisateur (maître de club ou pratiquant)
+- Les pratiquants peuvent s'inscrire avec les informations suivantes : nom, prénom, email, mot de passe, âge, ceinture actuelle, et type d'utilisateur (maître de club ou pratiquant).
 
-- Gestion des clubs : Une table club pour lister tous les clubs de karaté avec : nom du club, adresse, contact, maître principal, et description
+- Une table club pour lister tous les clubs de karaté avec : nom du club, adresse, contact, maître principal, et description.
 
-- Affiliation : Les pratiquants peuvent s’abonner à un club pour devenir membre affilié. Possibilité pour un maître de club de gérer les membres affiliés à son club
+- Les pratiquants peuvent s’abonner à un club pour devenir membre affilié. Possibilité pour un maître de club de gérer les membres affiliés à son club.
 
-- Attribution de matricule : Chaque pratiquant affilié reçoit un matricule unique (généré automatiquement). Le matricule est lié à l’affiliation et sert de preuve d’officialisation
+- Chaque pratiquant affilié reçoit un matricule unique (généré automatiquement). Le matricule est lié à l’affiliation et sert de preuve d’officialisation.
 
-- Gestion des rôles : Différenciation des rôles : pratiquants normaux et maîtres de clubs. Les maîtres de clubs peuvent approuver ou refuser des affiliations
+- Différenciation des rôles : pratiquants normaux et maîtres de clubs. Les maîtres de clubs peuvent approuver ou refuser des affiliations.
 
 - Ajout de nouveaux clubs : Les maîtres de clubs peuvent ajouter leur club
-- Liste des clubs : Tous les utilisateurs peuvent voir la liste des clubs
+
 - Modification des informations d’un club : Les maîtres de clubs peuvent modifier les informations de leur propre club
-- Afficher la liste des clubs
+
+
+
+
+
+
+
 
 
 
@@ -37,37 +46,12 @@ php -S localhost:8000 -t public
 
 ## Git
 
-- git status : Nous donne l'état de notre projet
-- git add --all ou git add . : Va tracker tous les fichiers(préparer)
-- git add <file> : Permet de préparer un fichier pour le commit 
-- git commit --amend : Permet de commit sur le commit précédent, d'envoyer tous ce qu'on a stége au commit précedent
-**commit**
-- git commit -m "Mon premier commit" : Ceci fera notre premier commit 
-- git commit -a : Va juste stage(préparer) juste avant(equivaut à faire un git add) tous les fichiers qui sont traqué et va ensuite les commits, donc on peut aussi mettre : -- git commit -a -m "Ajout de texte dans index.html"
-**log**
-- git log : Nous liste les derniers commits qui ont été faite dans notre projet
-- git log --oneline : La liste des commits sur une seule ligne 
-- git log -n 2 : Nous liste les deux derniers commits
-- git log -p index.html : Ici on souhaite observer tous les commits qui concerne le fichier
-- git log -n 1 -p index.html : Ici on souhaite observer tous les commits qui concerne mon fichier
-- git diff : Prends tous les fichiers qui ont été modifiés depuis le derniers commits et nous montre les modifications
-**ckeckout**
-- git checkout e32bb9(id du commit) : Permet de voir l'état du dépôt consulter et permet de revenir en arrière, mais ne fait pas de sauvegarde de modification
-- git checkout master : Permet de revenir à l'etat présent de mon projet
-- git checkout e32bb9 index.html : Permet de revenir sur le fichier tel qu'il était dans ce commit et sauvegarde la modif dans le dernier commit qu'on fera
-- git checkout master index.html : Permet de revenir sur le fichier tel qu'il était dans le dernier
-**revert**
-- git revert e32bb9(id du commit) : permet de revenir en arrière sur un commit (defait le commit)
-- git revert e32bb9(id du commit revert) : En le faisant la 2ème fois on defait le defesage de mon revert ce qui nous permet de reevnir sur le commit sans éffacé l'historique
 **reset**
 - git reset : Va vider le steging(add)
 - git reset HEAD index.html ou git reset -- .\index.html : Permet de supprimer un fichier de la liste a stéger
 - git reset --hard : Va revenir en arrière sur le derniers commits en supprimant le dernier et va modifié aussi notre dépot pour tout ramener au commit choisi
 - git reset e32bb9(id du commit) : Revient en arrière sur ce commit, mais ça laisse en stéging toutes les modif qui ont été apporté dépuis, mais l'historique avant le commit choisi sera supprimé
-- git reset HEAD^ ou HEAD^^^ : Pour le HEAD ça revient a chaque fois avec ^ d'un cran
-- git reset HEAD^ --soft : Permet bien de revenir en arrière et laisse toute les modifications qui ont été faites en steging
-- git reset HEAD^ --mixed : Revenir en arrière et laisse toute les modifications qui ont été faites au niveau de mon dépot et ça ne les stége pas
-- git reset --hard HEAD : Si j'ai supprimé un fichier par erreur et que je veut le recupérer, cette commande revient sur le commit précédent
+
 **branch**
 - git branch redisign : Créer une branche
 - git checkout redisign : Permet de sauter sur une branche 
@@ -76,15 +60,7 @@ php -S localhost:8000 -t public
 - git checkout master : Me permet de revenir sur la branche master
 - git merge redisign : Me permet de fusioner la branche redisign a ma barnche principale master
 - git branch -d redisign : Permet de supprimer une branche, il ne me laisse pas faire si il y'a des commits en attentes que je n'ai pas fusioner
-**stash**
-- git stash : Permet de mettre en memoire toutes les modifications que j'ai faite dépuis le derneir commit que je n'ai pas encore commit
-- git stash list : Permet de voir la liste des stash qui ont été éffectué
-- git stash apply : Permet de ramener le travaille que j'effectuais, applique tous ce qui a été stocker en memoire au commit courant
-- git stash drop : Supprime le dernier élément stocker en stash
-- git stash save Ajout du css : Permet de donner un nom a notre stash
-- git stash show stash@{1} : Permet de voir un stash, on peut mettre -p pour voir plus de détail
-- git stash apply stash@{1} .. git stash pop stash@{1} : Permet de apply et drop un stash
-- git stash -u : Permet de stasher les fichiers qui ne sont pas traqué (Nouveau fichier)
+
 **Remote**
 - git init --bare : Initialise un remote 
 - git remote add origin <ssh> ou <chemin_dossier_remote> : Permet de rajouter un remote, mais on le fait dans notre projet
@@ -120,11 +96,3 @@ php -S localhost:8000 -t public
     Ensuite il peut avoir des ichou (Problème que d'autre ont rencontré), après l'avoir resolu, on nomme les commits du genre git commit -a -m "fixes #1, Ajout de ligne"
 
     Pour la sécurité, pour ne que tout le monde puisse commit ses modifications sur github, on vas crée un fork qui est miroir du projet que je regarde, nous permet d'avoir les permissions dessus
-
-
-
-
-
-git remote add origin git@github.com:Adama100/Karate.git
-git branch -M main
-git push -u origin main
