@@ -22,7 +22,8 @@ use PHPMailer\PHPMailer\SMTP;
          * Permet d'envoyer des demandes de contact des utilisateurs à l'administrateur
          * @return void
         */
-        public function contact() {
+        public function contact() 
+        {
             $mail = new PHPMailer(true);
             // $mail->isSendmail();
             $mail->isSMTP(); 
@@ -79,10 +80,15 @@ use PHPMailer\PHPMailer\SMTP;
             $mail->send();
         }
 
+        /**
+         * Lis un fichier et le retourne en chaîne de caractère
+         * @param mixed $url
+         * @return bool|string
+        */
         public static function getPage($url) 
         {
             ob_start();
-            require($url);
+            require $url;
             $content = ob_get_contents();
             ob_end_clean();
             return $content;

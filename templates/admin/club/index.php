@@ -1,16 +1,17 @@
 <?php
 
 use App\App;
-use App\Domain\Builder\PaginatedQuery;
-use App\Domain\Builder\QueryBuilder;
+use App\Domain\Application\Builder\PaginatedQuery;
+use App\Domain\Application\Builder\QueryBuilder;
+use App\Domain\Application\Session\PHPSession;
+use App\Domain\Auth\Security\UserChecker;
 use App\Domain\Club\Club;
-use App\Domain\Security\UserChecker;
-use App\Session;
 
-Session::getSession();
+PHPSession::get();
 UserChecker::AdminCheck($r->generate('login'));
 
     $title = "Administartion | Clubs";
+    $nav = "admin.clubs";
     $pdo = App::getPDO();
 
     $query = (new QueryBuilder($pdo, Club::class))
@@ -21,7 +22,7 @@ UserChecker::AdminCheck($r->generate('login'));
             ->where("c.name LIKE :name")
             ->setParam('name', '%' . $_GET['q'] . '%');
     }
-    $tableQuery = new PaginatedQuery($query, $_GET);
+    $tableQuery = new PaginatedQuery($query, $_GET, 12);
     [$data, $pages, $error] = $tableQuery->queryFetchRender();
 
 ?>

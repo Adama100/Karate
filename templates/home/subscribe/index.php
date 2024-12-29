@@ -1,8 +1,8 @@
 <?php
 
-use App\Session;
+use App\Domain\Application\Session\PHPSession;
 
-Session::getSession();
+PHPSession::get();
 
 /*
     $amount = 5000; // Montant de l'abonnement en FCFA

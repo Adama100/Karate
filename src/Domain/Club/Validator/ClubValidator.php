@@ -1,12 +1,13 @@
 <?php
 
-    namespace App\Domain\Club;
+    namespace App\Domain\Club\Validator;
 
-use App\Domain\Abstract\AbstractValidator;
+    use App\Domain\Application\Abstract\AbstractValidator;
+    use App\Domain\Club\Repository\ClubRepository;
 
     class ClubValidator extends AbstractValidator {
 
-        public function __construct(array $data, ClubTable $clubTable, ?int $club_id)
+        public function __construct(array $data, ClubRepository $clubTable, ?int $club_id)
         {
             parent::__construct($data);
             $this->validator->rule('required', ['name', 'description']);

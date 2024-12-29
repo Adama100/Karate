@@ -1,13 +1,21 @@
 <?php
 
-    namespace App\Domain\Abstract;
-    use Valitron\Validator;
+    namespace App\Domain\Application\Validator;
 
-    class ValidatorValitron extends Validator {
+use Valitron\Validator;
+
+    class Valitron extends Validator {
 
         protected static $_lang = "fr"; 
 
-        // Quand on redefini un constructeur il faut qu'il est les même paramètre que le constructeur parent
+        /**
+         * Vérifie si un fichier est un image
+         * @param mixed $data
+         * @param mixed $fields
+         * @param mixed $lang
+         * @param mixed $langDir
+         * @return void
+        */
         public function __construct($data = array(), $fields = array(), $lang = null, $langDir = null)
         {
             parent::__construct($data, $fields, $lang, $langDir);
@@ -22,6 +30,13 @@
             }, 'Le fichier n\'est pas une image');
         }
 
+        /**
+         * Change la définition du message d'erreur
+         * @param mixed $field
+         * @param mixed $message
+         * @param mixed $params
+         * @return string
+        */
         protected function checkAndSetLabel($field, $message, $params)
         {
             return str_replace('{field} ', '', $message);
@@ -38,4 +53,5 @@
                 return in_array($info, $mimes);
             }, 'Le fichier n\'est pas une image');
         */
+
     }

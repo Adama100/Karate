@@ -1,10 +1,11 @@
 <?php
 
-    namespace App\Domain\Club;
+    namespace App\Domain\Club\Repository;
 
-    use App\Domain\Abstract\Table;
+    use App\Domain\Application\Abstract\AbstractTable;
+use App\Domain\Club\Club;
 
-    class ClubTable extends Table {
+    class ClubRepository extends AbstractTable {
 
         protected $table = "club";
         protected $class = Club::class;

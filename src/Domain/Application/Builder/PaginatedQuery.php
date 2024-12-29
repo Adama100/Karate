@@ -1,6 +1,6 @@
 <?php
 
-    namespace App\Domain\Builder;
+    namespace App\Domain\Application\Builder;
 
 use App\Helper\URLHelper;
 
@@ -18,23 +18,22 @@ use App\Helper\URLHelper;
             $this->perPage = $perPage;
         }
 
-        private function getCurrentPage(): int
-        {
-            return URLHelper::getPositiveInt('p', 1);
-        } 
-
-        private function countQuery()
-        {
-            return (clone $this->query)->count();
-        }
-
+        /**
+         * Prend en paramètre les champ du tablau à filtrer
+         * @param string[] $sortable
+         * @return \App\Domain\Application\Builder\PaginatedQuery
+        */
         public function sortable(string ...$sortable): self
         {
             $this->sortable = $sortable;
             return $this;
         }
 
-        public function queryFetchRender()
+        /**
+         *
+         * @return array
+        */
+        public function queryFetchRender(): array
         {
             $currentPage = $this->getCurrentPage();
             $count =  $this->countQuery();
@@ -50,12 +49,7 @@ use App\Helper\URLHelper;
             $pages = ceil($count / $this->perPage);
             $error = null;
             if($currentPage > $pages) {
-                // Solution à faire sortir l'erreur
-                if(isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
-                    $error = 'Aucune donnée trouvé';
-                } else {
-                    $error = 'Aucune donnée trouvé';
-                }
+                $error = 'Aucune donnée trouvé';
             }
             return [$items, $pages, $error];
         }
@@ -88,7 +82,7 @@ HTML;
             $range = 2;
             ?>
             <?php if($pages <= 1): ?>
-                <?php // Pas de pagination si une seule page ?>
+                <!-- Pas de pagination si une seule page -->
             <?php elseif($pages <= 7): ?>
 
                 <?php for ($i = 1; $i <= $pages; $i++): ?>
@@ -101,7 +95,7 @@ HTML;
 
             <?php else: ?>
 
-                <?php if($currentPage > 1 + $range): // Si plus de 7 pages ?>
+                <?php if($currentPage > 1 + $range): # Si plus de 7 pages ?>
                     <a class='btn btn-primary' href="?<?= URLHelper::withParam($this->get, 'p', 1) ?>">1</a>
                 <?php endif; ?>
                 <?php if($currentPage > 2 + $range): ?>
@@ -125,6 +119,16 @@ HTML;
 
             <?php endif ?>
             <?php
+        }
+
+        private function getCurrentPage(): int
+        {
+            return URLHelper::getPositiveInt('p', 1);
+        }
+
+        private function countQuery()
+        {
+            return (clone $this->query)->count();
         }
 
     }

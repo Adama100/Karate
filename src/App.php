@@ -2,6 +2,7 @@
 
     namespace App;
 
+use App\Domain\Application\Session\PHPSession;
 use App\Domain\Auth\Auth;
 
     class App {
@@ -31,7 +32,7 @@ use App\Domain\Auth\Auth;
         {
             if(!self::$auth) {
                 if(session_status() === PHP_SESSION_NONE) {
-                    Session::getSession();
+                    PHPSession::get();
                 }
                 self::$auth = new Auth(self::getPDO(), $_SESSION); 
             }

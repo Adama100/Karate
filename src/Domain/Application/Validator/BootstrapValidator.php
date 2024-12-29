@@ -1,8 +1,8 @@
 <?php
 
-    namespace App\Domain\Security;
+    namespace App\Domain\Application\Validator;
 
-    class BootstrapValid {
+    class BootstrapValidator {
 
         public static function isValid(array $errors, string $key): ?string
         {
@@ -22,4 +22,5 @@
 HTML;       }
             return null; 
         }
+
     }

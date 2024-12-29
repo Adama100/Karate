@@ -1,32 +1,33 @@
 <?php
 
 use App\App;
-use App\Domain\Builder\FormBuilder;
-use App\Domain\Club\ClubTable;
-use App\Domain\Club\ClubValidator;
-use App\Domain\Security\TokenCSRF;
-use App\Domain\Security\UserChecker;
-use App\Session;
+use App\Domain\Application\Builder\Form;
+use App\Domain\Application\Security\TokenCsrf;
+use App\Domain\Application\Session\Flash;
+use App\Domain\Application\Session\PHPSession;
+use App\Domain\Auth\Security\UserChecker;
+use App\Domain\Club\Repository\ClubRepository;
+use App\Domain\Club\Validator\ClubValidator;
 
-Session::getSession();
+PHPSession::get();
 UserChecker::AdminCheck($r->generate('login'));
 
     $id = (int)$params['id'];
     $pdo = App::getPDO();
 
-    $clubTable = new ClubTable($pdo);
+    $clubTable = new ClubRepository($pdo);
     try {
         $club = $clubTable->find($id);
     } catch(Exception $e) {
-        Session::flash('danger', $e);
+        Flash::flash('danger', $e);
         header('Location: ' . $r->generate('admin.clubs')); exit;
     }
     $errors = [];
 
     if(!empty($_POST)) {
 
-        if (!TokenCSRF::validateToken($_POST['csrf'])) {
-            Session::flash('danger', 'Token CSRF invalide');
+        if (!TokenCsrf::validateToken($_POST['csrf'])) {
+            Flash::flash('danger', 'Token CSRF invalide');
         }
 
         $data = array_merge($_POST, $_FILES);
@@ -40,14 +41,14 @@ UserChecker::AdminCheck($r->generate('login'));
                 ->setMasterAdresse(htmlspecialchars($data['master_adresse']))
             ;
             $clubTable->update($club);
-            Session::flash('success', 'Le club a bien été modifier');  
+            Flash::flash('success', 'Le club a bien été modifier');  
             header('Location: ' . $r->generate('admin.club.edit', ['id' => $club->getId()])); exit; 
         } else {
             $errors = $v->errors();
         }
     }
 
-    $form = new FormBuilder($club, $errors);
+    $form = new Form($club, $errors);
 
 ?>
 

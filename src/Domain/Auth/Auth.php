@@ -2,7 +2,7 @@
 
     namespace App\Domain\Auth;
 
-use App\Session;
+use App\Domain\Auth\Entity\User;
 use PDO;
 
     class Auth {
@@ -11,9 +11,9 @@ use PDO;
         private $session;
 
         public function __construct(PDO $pdo, array &$session)
-        {   
+        {
             $this->pdo = $pdo;
-            $this->session = &$session; // Une reference au tableau de session
+            $this->session = &$session; # Une reference au tableau de session
         }
 
         /**
@@ -45,7 +45,7 @@ use PDO;
                 throw new \Exception("Vous n'êtes pas connecter");
             }
             if(!in_array($user->getRole(), $roles)) { 
-                throw new \Exception("l'accès à cet espace vous est interdit, vous n'avez pas le rôle suffisant");               
+                throw new \Exception("l'accès à cet espace vous est interdit, vous n'avez pas le rôle suffisant");
             }
         }
 
@@ -59,37 +59,30 @@ use PDO;
         */
         public function login(string $username, string $password, string $remember = null): ?User
         {
-            $username = trim($username);
-
             $check = $this->pdo->prepare('SELECT * FROM users WHERE (username = :username OR email = :username) AND sign_at IS NULL');
             $check->execute([
-                'username' => $username,
+                'username' => trim($username)
             ]);
-            $check->setFetchMode(PDO::FETCH_CLASS, User::class);
-            $user = $check->fetch();
-            if($user !== false) {
+            $check = $check->fetch();
+            if($check !== false) {
                 throw new \Exception("Veuiller confirmer votre inscription par l'email que vous avez reçu ou opter pour l'option mot de passe oublié");
             }
 
-            $check = $this->pdo->prepare('SELECT * FROM users WHERE (username = :username OR email = :username) AND sign_at IS NOT NULL');
-            $check->execute([
-                'username' => $username,
+            $user = $this->pdo->prepare('SELECT * FROM users WHERE (username = :username OR email = :username) AND sign_at IS NOT NULL');
+            $user->execute([
+                'username' => trim($username)
             ]);
-            $check->setFetchMode(PDO::FETCH_CLASS, User::class);
-            $user = $check->fetch();
+            $user->setFetchMode(PDO::FETCH_CLASS, User::class);
+            $user = $user->fetch();
             if($user === false) {
                 return null;
-            }
-
-            if ($user->getLockedUntil() && strtotime($user->getLockedUntil()) > time()) {
-                throw new \Exception('Votre compte est bloqué jusqu\'au ' . $user->getLockedUntil() . ', avant de réssayer ou vous pouvez opter pour l\'option mot de passe oublié');
             }
 
             if(password_verify($password, $user->getPassword())) {
                 if($remember !== null) {
                     setcookie('auth', $user->getId() . '--' . sha1($user->getUsername() . $user->getPassword() . $_SERVER['REMOTE_ADDR']),
                     [
-                        'domain' => 'localhost',
+                        'domain' => 'localhost', # Variable globale
                         'path' => '/',
                         'expires' => time() + 3600*24*3,
                         'secure' => true,
@@ -97,45 +90,21 @@ use PDO;
                         'samesite' => 'Lax'
                     ]);
                 }
-
-                // Débloquer le compte
-                $unlock = $this->pdo->prepare("UPDATE users SET locked_until = NULL WHERE id = ?");
-                $unlock->execute([$user->getId()]);
-                $deleteLoginAttempts = $this->pdo->prepare('DELETE FROM login_attempts WHERE user_id = ?');
-                $deleteLoginAttempts->execute([$user->getId()]);
-
                 $this->session['USER'] = $user->getId();
                 return $user;
-
-            } else {
-
-                $stmt = $this->pdo->prepare("SELECT COUNT(*) as attempt_count FROM login_attempts WHERE user_id = ? AND attempt_time > NOW() - INTERVAL 10 MINUTE
-                ");
-                $stmt->execute([$user->getId()]);
-                $failedAttempts = $stmt->fetch()['attempt_count'];
-
-                if ($failedAttempts >= 3) {
-
-                    $stmt = $this->pdo->prepare("UPDATE users SET locked_until = NOW() + INTERVAL 10 MINUTE WHERE id = ?");
-                    $stmt->execute([$user->getId()]);
-                    throw new \Exception('Votre compte a été temporairement bloqué après plusieurs tentatives échouées. Un email de déblocage vous a été envoyé');
-
-                } else {
-                    $stmt = $this->pdo->prepare("INSERT INTO login_attempts (user_id) VALUES (?)");
-                    $stmt->execute([$user->getId()]);
-                }
             }
             return null;
         }
 
         /**
-         * Vérifie une cookie existant
+         * Vérifie une cookie existant et créer une nouvelle session
          * @param \PDO $pdo
          * @return void
         */
-        public static function cookie(PDO $pdo) {
+        public static function cookie(PDO $pdo) : void
+        {
             if(session_status() === PHP_SESSION_NONE) {
-                Session::getSession();
+                session_start();
             }
             if(isset($_COOKIE['auth']) && !isset($_SESSION['USER'])) {
                 $auth = $_COOKIE['auth'];

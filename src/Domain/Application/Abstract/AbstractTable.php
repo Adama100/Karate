@@ -1,14 +1,16 @@
 <?php
 
-    namespace App\Domain\Abstract;
+    namespace App\Domain\Application\Abstract;
 
 use PDO;
 
-    abstract class Table {
-    
+    abstract class AbstractTable {
+
         protected $pdo;
         protected $table = null;
-        protected $class = null; 
+        protected $class = null;
+
+
         public function __construct(PDO $pdo)
         {
             if($this->table === null) {
@@ -20,11 +22,22 @@ use PDO;
             $this->pdo = $pdo;
         }
 
-        public function all(): array {
+        /**
+         * Récupère plusieurs résultats
+         * @return array
+        */
+        public function findAll(): array
+        {
             $sql = "SELECT * FROM {$this->table}";
             return $this->pdo->query($sql, PDO::FETCH_CLASS, $this->class)->fetchAll();
         }
 
+        /**
+         * Récupère un seule résultat
+         * @param int $id
+         * @throws \Exception
+         * @return mixed
+        */
         public function find(int $id): mixed
         {
             $query = $this->pdo->prepare("SELECT * FROM {$this->table} WHERE id = :id");
@@ -37,6 +50,12 @@ use PDO;
             return $result;
         }
 
+        /**
+         * Supprime un enregistrement
+         * @param int $id
+         * @throws \Exception
+         * @return void
+        */
         public function delete(int $id): void {
             $query = $this->pdo->prepare("DELETE FROM {$this->table} WHERE id = :id");
             $ok = $query->execute(['id' => $id]);
@@ -45,20 +64,14 @@ use PDO;
             }
         }
 
-        public function verify(string $field, $value)
-        {
-            $query = $this->pdo->prepare("SELECT $field FROM {$this->table} WHERE $field = ?");
-            $param = [$value];
-            $query->execute($param);
-            return (int)$query->rowCount();
-        }
-
         /**
-        * Vérifie si une valeur existe dans un champ
-        * @param string $field Champs à rechercher
-        * @param mixed $value Valeur associé au champ
+         * Vérifie si une valeur existe dans un champ
+         * @param string $field Champs à rechercher
+         * @param mixed $value Valeur associé au champ
+         * @param int $except
+         * @return bool
         */
-        public function exists(string $field, $value, int $except = null): bool 
+        public function exists(string $field, $value, int $except = null): bool
         {
             $sql = "SELECT COUNT(id) FROM {$this->table} WHERE $field = ?";
             $par = [$value];

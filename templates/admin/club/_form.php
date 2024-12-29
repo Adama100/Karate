@@ -1,10 +1,9 @@
 <?php
 
-use App\Domain\Security\TokenCSRF;
+use App\Domain\Application\Security\TokenCsrf;
 ?>
-
 <form action="" method="post" enctype="multipart/form-data" id="myForm">
-    <?= TokenCSRF::getFormField() ?>
+    <?= TokenCsrf::getFormField() ?>
     <?= $form->input('text', 'name', 'Nom') ?>
     <?= $form->input('text', 'description', 'Description') ?>
     <?= $form->input('text', 'address', 'Adresse') ?>

@@ -27,27 +27,17 @@ CREATE TABLE users (
     phone_number VARCHAR(255) NOT NULL,
     address VARCHAR(255) NOT NULL,
     bio TEXT DEFAULT NULL,
+    sign_token TEXT DEFAULT NULL,
 
     role ENUM('users', 'admin', 'super admin') DEFAULT 'users',
-    token TEXT DEFAULT NULL,
     sign_at DATETIME DEFAULT NULL,
     reset_password_token TEXT DEFAULT NULL,
     reset_password_at DATETIME DEFAULT NULL,
-    chang_mail VARCHAR(255) DEFAULT NULL,
-    message_at TIMESTAMP NULL, -- Temps a attendre pour un envoyer plus de 2 messages
-    delete_requested_at DATETIME DEFAULT NULL, -- Supprimer compte
-    locked_until DATETIME DEFAULT NULL, -- Temps jusqu'auquel le compte est bloqué
     CONSTRAINT fk_users_club
         FOREIGN KEY (club_id)
         REFERENCES club(id)
         ON DELETE SET NULL
-        ON UPDATE RESTRICT -- Ici on doit savoir si le club supprimé, supprime les users
-)
-
-CREATE TABLE login_attempts (
-    id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    user_id INT UNSIGNED,
-    attempt_time DATETIME DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE RESTRICT
 )
 
 CREATE TABLE affilier (

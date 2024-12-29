@@ -2,6 +2,8 @@
 
     namespace App\Domain\Auth;
 
+use App\Domain\Auth\Repository\UserRepository;
+
     class UserValidator {
 
         private $pdo;
@@ -10,25 +12,25 @@
         {
             $this->pdo = $pdo;
         }
-    
+
         /**
         * Retourne un Tableau vide si il n'y a pas d'erreur sinon un tableau vide
         * @return array
         */
-        public function signValid(string $username, string $email, string $password, string $confirm_password): array
+        public function signValidator(string $username, string $email, string $password, string $confirm_password): array
         {
             $errors = [];
 
-            $userTable = new UserTable($this->pdo);
+            $userTable = new UserRepository($this->pdo);
             $this->pdo->beginTransaction();
-            $pseudo_verify = $userTable->verify('username', $username);
-            $email_verify = $userTable->verify('email', $email);
+            $pseudo_verify = $userTable->exists('username', $username);
+            $email_verify = $userTable->exists('email', $email);
             $this->pdo->commit();
 
-            if($pseudo_verify !== 0) {
+            if($pseudo_verify) {
                 $errors['username'] = "Pseudo déjà utiliser";
             }
-            if($email_verify !== 0) {
+            if($email_verify) {
                 $errors['email'] = "Cette adresse email est déjà associée à un compte";
             }
             if(empty($username) || !preg_match('/^[a-zA-Z0-9_]+$/', $username)) {

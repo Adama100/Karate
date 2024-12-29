@@ -1,6 +1,8 @@
 <?php
 
-    namespace App\Domain\Abstract;
+    namespace App\Domain\Application\Abstract;
+
+use App\Domain\Application\Validator\Valitron;
 
     abstract class AbstractValidator {
 
@@ -10,7 +12,7 @@
         public function __construct(array $data)
         {
             $this->data = $data;
-            $this->validator = new ValidatorValitron($data);
+            $this->validator = new Valitron($data);
         }
 
         public function validate(): bool {

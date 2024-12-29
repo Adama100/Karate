@@ -1,6 +1,6 @@
 <?php
 
-    namespace App\Domain\Builder;
+    namespace App\Domain\Application\Builder;
 
 use Exception;
 use PDO;
@@ -22,7 +22,7 @@ use PDO;
         private $CountId;
         private $count;
 
-        public function __construct(?PDO $pdo = null, $classMapping = null, string $CountId = 'id') 
+        public function __construct(?PDO $pdo = null, $classMapping = null, string $CountId = 'id')
         {
             $this->pdo = $pdo;
             $this->classMapping = $classMapping;
@@ -53,7 +53,12 @@ use PDO;
             $this->where[] = $where;
             return $this;
         }
-        
+
+        /**
+         * Groupe les données grâce aux champs selectionnés
+         * @param array $fields
+         * @return \App\Domain\Application\Builder\QueryBuilder
+        */
         public function groupBy(...$fields): self
         {
             if(is_array($fields[0])) {
@@ -63,6 +68,11 @@ use PDO;
             return $this;
         }
 
+        /**
+         * Filtre les groupes après l’application de fonctions d’agrégation
+         * @param string $condition
+         * @return \App\Domain\Application\Builder\QueryBuilder
+        */
         public function having(string $condition): self
         {
             $this->having[] = $condition;
@@ -71,7 +81,7 @@ use PDO;
 
         public function orderBy(string $key, string $direction): self
         {
-            $direction = strtoupper($direction); // Pour avoir la direction en majuscule
+            $direction = strtoupper($direction);
             if(!in_array($direction, ['ASC', 'DESC'])) {
                 $this->orderBy[] = $key;
             } else {
@@ -103,7 +113,7 @@ use PDO;
         public function setParam(string $key, $value): self
         {
             $this->params[$key] = $value;
-            return $this;      
+            return $this;
         }
 
         public function join($table, $condition, $type = 'INNER'): self
@@ -113,7 +123,7 @@ use PDO;
         }
 
         public function toSQL(): string
-        {   
+        {
             $fields = implode(', ', $this->fields);
             $sql = "SELECT $fields FROM {$this->from}";
             if(!empty($this->joins)) {
@@ -139,7 +149,7 @@ use PDO;
             }
             return $sql;
         }
-        
+
         public function fetch(): ?array
         {
             $query = $this->pdo->prepare($this->toSQL());
@@ -155,7 +165,39 @@ use PDO;
             return $result;
         }
 
-        public function fetchFiled(string $field): ?string
+        public function fetchAll(): array
+        {
+            try {
+                $query = $this->pdo->prepare($this->toSQL());
+                $query->execute($this->params);
+                if($this->classMapping === null) {
+                    return $query->fetchAll();
+                } else {
+                    return $query->fetchAll(PDO::FETCH_CLASS, $this->classMapping);
+                }
+            } catch(Exception $e) {
+                throw new Exception("Impossible d'effectuer la requette " . $this->toSQL() . " : " . $e->getMessage());
+            }
+        }
+
+        /**
+         * Clone une requette
+         * @return int
+        */
+        public function count(): int
+        {
+            if($this->count === null) {
+                $this->count = (int)(clone $this)->select("COUNT({$this->CountId}) as count")->fetchField('count');
+            }
+            return $this->count;
+        }
+
+        /**
+         * Récupère le résultat d'une seule colonne
+         * @param string $field
+         * @return mixed
+        */
+        private function fetchField(string $field): ?string
         {
             $query = $this->pdo->prepare($this->toSQL());
             $query->execute($this->params);
@@ -166,44 +208,4 @@ use PDO;
             return $result[$field] ?? null;
         }
 
-        public function fetchAll(): array
-        {
-            try {          
-                $query = $this->pdo->prepare($this->toSQL());
-                $query->execute($this->params);
-                if($this->classMapping === null) {
-                    return $query->fetchAll();
-                } else {
-                    return $query->fetchAll(PDO::FETCH_CLASS, $this->classMapping);        
-                }
-            } catch(Exception $e) {
-                throw new Exception("Impossible d'effectuer la requette " . $this->toSQL() . " : " . $e->getMessage());
-            }
-        }
-
-        public function count(): int
-        {   
-            if($this->count === null) {
-                $this->count = (int)(clone $this)->select("COUNT({$this->CountId}) as count")->fetchFiled('count');
-            } 
-            return $this->count;
-        }
-
     }
-
-
-/*
-    -- Les Fonctions d'agregats
-        - avg() -- Permet de faire une moyenne
-        - count() -- Permet de compter le nombre d'éléments que l'on a, count(*) nous les enregistrement même celle qui sont null
-        - max() -- Permet de récupérer la valeur maximale que l'on a
-        - min() -- Permet de récupérer la valeur minimale que l'on a
-        - sum() -- Permet de faire une somme
-        - total() -- Permet de faire une somme, mais va utiliser un système avec les virgules
-        - CONCAT() -- Permet de concatener Ex : SELECT CONCAT(nom, ' ', prenom) 
-
-    SELECT COUNT(id), durée FROM recipes GROUP BY durée -- Va grouper les données par la durée et avec GROUP on ne peut classer que les champs selectionner
-    HAVING est utilisé pour filtrer les groupes après l’application de fonctions d’agrégation.
-    GROUP BY durée ORDER BY durée DESC, namerecipe ASC : -- Si il y'a des exceco il les classera par leur nom dans l'ordre croissant
-    WHERE filtre les lignes avant l'agrégation, tandis que HAVING filtre les groupes après.
-*/

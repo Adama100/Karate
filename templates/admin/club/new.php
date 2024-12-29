@@ -1,28 +1,29 @@
 <?php
 
 use App\App;
-use App\Domain\Builder\FormBuilder;
+use App\Domain\Application\Builder\Form;
+use App\Domain\Application\Security\TokenCsrf;
+use App\Domain\Application\Session\Flash;
+use App\Domain\Application\Session\PHPSession;
+use App\Domain\Auth\Security\UserChecker;
 use App\Domain\Club\Club;
-use App\Domain\Club\ClubTable;
-use App\Domain\Club\ClubValidator;
-use App\Domain\Security\TokenCSRF;
-use App\Domain\Security\UserChecker;
-use App\Session;
+use App\Domain\Club\Repository\ClubRepository;
+use App\Domain\Club\Validator\ClubValidator;
 
-Session::getSession();
+PHPSession::get();
 UserChecker::AdminCheck($r->generate('login'));
 
     $title = "Nouveau club";
     $pdo = App::getPDO();
 
     $club = new Club();
-    $clubTable = new ClubTable($pdo);
+    $clubTable = new ClubRepository($pdo);
 
     $errors = [];
     if(!empty($_POST)) {
 
-        if (!TokenCSRF::validateToken($_POST['csrf'])) {
-            Session::flash('danger', 'Token CSRF invalide');
+        if (!TokenCsrf::validateToken($_POST['csrf'])) {
+            Flash::flash('danger', 'Token CSRF invalide');
         }
 
         $data = array_merge($_POST, $_FILES);
@@ -36,14 +37,14 @@ UserChecker::AdminCheck($r->generate('login'));
                 ->setMasterAdresse(htmlspecialchars($data['master_adresse']))
             ;
             $clubTable->create($club);
-            Session::flash('success', 'Le club a bien été créer');  
+            Flash::flash('success', 'Le club a bien été créer');  
             header('Location: ' . $r->generate('admin.club.edit', ['id' => $club->getId()])); exit; 
         } else {
             $errors = $v->errors();
         }
     }
 
-    $form = new FormBuilder($club, $errors);
+    $form = new Form($club, $errors);
 
 ?>
 

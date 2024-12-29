@@ -1,8 +1,8 @@
 <?php
 
-    namespace App\Domain\Builder;
+    namespace App\Domain\Application\Builder;
 
-    class FormBuilder {
+    class Form {
 
         private $data;
         private $errors;
@@ -13,6 +13,14 @@
             $this->errors = $errors;
         }
 
+        /**
+         *
+         * @param string $type
+         * @param string $key
+         * @param string $label
+         * @param string $class
+         * @return string
+        */
         public function input(string $type, string $key, string $label, string $class = 'form-control'): string
         {
             $value = $this->getValue($key);
@@ -25,6 +33,13 @@
 HTML;
         }
 
+        /**
+         *
+         * @param string $key
+         * @param string $label
+         * @param string $class
+         * @return string
+        */
         public function file(string $key, string $label, string $class = 'form-control'): string
         {
             return <<<HTML
@@ -36,6 +51,13 @@ HTML;
 HTML;
         }
 
+        /**
+         *
+         * @param string $key
+         * @param string $label
+         * @param string $class
+         * @return string
+        */
         public function textarea(string $key, string $label, string $class = 'form-control'): string
         {
             $value = $this->getValue($key);
@@ -48,6 +70,14 @@ HTML;
 HTML;
         }
 
+        /**
+         *
+         * @param string $key
+         * @param string $label
+         * @param array $options
+         * @param string $class
+         * @return string
+        */
         public function select(string $key, string $label, array $options = [], string $class = 'form-control'): string
         {
             $optionsHTML = [];
@@ -64,6 +94,52 @@ HTML;
                         {$optionsHTML}
                     </select>
                     {$this->getErrorFeedback($key)}
+                </div>
+HTML;
+        }
+
+        /**
+         *
+         * @param string $key Le nom du champ
+         * @param string $value La valeur du champ
+         * @return string Le HTML pour la checkbox
+        */
+        public function checkbox(string $key, string $value): string
+        {
+            $attribute = '';
+            $data = $this->getValue($key);
+            if(isset($data) && in_array($value, $data)) {
+                $attribute .= 'checked';
+            }
+            return <<<HTML
+                <div class="checkbox">
+                    <label for="field{$value}">
+                        <input type="checkbox" name="{$key}[]" id="field{$value}" value="$value" $attribute>
+                        $value
+                    </label>
+                </div>
+HTML;
+        }
+
+        /**
+         *
+         * @param string $name Le nom du champ
+         * @param string $value La valeur du champ
+         * @return string Le HTML pour le radio button
+        */
+        public function radio(string $key, string $value): string
+        {
+            $attribute = '';
+            $data = $this->data;
+            if(isset($data[$key]) && $value === $data[$key]) {
+                $attribute .= 'checked';
+            }
+            return <<<HTML
+                <div class="checkbox">
+                    <label>
+                        <input type="radio" name="{$key}" value="$value" $attribute required>
+                        $value
+                    </label>
                 </div>
 HTML;
         }
@@ -118,4 +194,5 @@ HTML;
             }
             return '';
         }
+
     }

@@ -1,11 +1,11 @@
 <?php
 
-    namespace App\Domain\Security;
+    namespace App\Domain\Application\Security;
 
-    class TokenCSRF {
+    class TokenCsrf {
 
         /**
-         * Générer un token CSRF
+         * Génére un token
          * @return mixed|string
         */
         public static function generateToken()
@@ -17,7 +17,7 @@
         }
 
         /**
-         * Inclure un champ caché avec le token dans les formulaires
+         * Inclus un champ caché avec le token dans les formulaires
          * @return string
         */
         public static function getFormField(): string

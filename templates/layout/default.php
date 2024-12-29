@@ -12,7 +12,7 @@
     <?php if(isset($author)): ?>
         <meta name="author" content="<?= $author ?? '' ?>">
     <?php endif; ?>
-    <title><?= isset($title) ? htmlentities($title) : 'PagneMarket' ?> | Karate</title>
+    <title><?= isset($title) ? htmlentities($title) : 'Karate' ?></title>
     <link rel="icon" href="" type="image/svg+xml">
     <link rel="stylesheet" href="/KRT/public/dist/app.css?v=<?= $cssVersion ?>">
     <script src="/KRT/public/dist/app.js?v=<?= $jsVersion ?>" defer></script>
@@ -47,7 +47,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="<?= $r->generate('out') ?>" class="nav-link">Deconnexion</a>
+                        <a href="<?= $r->generate('logout') ?>" class="nav-link">Deconnexion</a>
                     </li>
                     <?php endif; ?>
                 </ul>
@@ -73,12 +73,14 @@
         </div>
     </main>
 
-    <footer>
-        <?php if(defined('DEBUG_TIME')): ?>
-            <div class="p-4">
-                Page généré en <?= round(1000 * (microtime(true) - DEBUG_TIME)) ?> ms
-            </div>
-        <?php endif ?>
+    <footer class="py-3 my-4">
+        <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Home</a></li>
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Contact</a></li>
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">A propos</a></li>
+        </ul>
+        <p class="text-center text-body-secondary">&copy; 2023 Company, Inc</p>
     </footer>
+
 </body>
 </html>

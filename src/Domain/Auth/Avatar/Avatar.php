@@ -1,7 +1,8 @@
 <?php
 
-    namespace App\Domain\Auth;
+    namespace App\Domain\Auth\Avatar;
 
+use App\Domain\Auth\Entity\User;
 use Exception;
 use finfo;
 
@@ -9,28 +10,26 @@ use finfo;
 
         private $pdo;
         private $user;
-        private $router;
 
-        public function __construct(\PDO $pdo, User $user, &$router)
+        public function __construct(\PDO $pdo, User $user)
         {
             $this->pdo = $pdo;
             $this->user = $user;
-            $this->router = &$router;
         }
 
         /**
-         * Avatar
-         * @param array $file Ici le tableau est $_FILES['Nom de formulaire']
+         * Permet de générer un avatar pour un utilisateur
+         * @param array $file Ici le tableau est $_FILES['name']
          * @return void
         */
-        public function avatar(array $file)
+        public function avatar(array $file, string $path)
         {
-            $uploadDir = UPLOAD_PATH . DIRECTORY_SEPARATOR .'users/' . $this->user->getId() . '/';
+            $uploadDir = $path . $this->user->getId() . '/';
             if(!is_dir($uploadDir)) {
                 mkdir($uploadDir, 0777, true);
             }
-            $ext = new finfo();
-            $extension = $ext->file($file['tmp_name'], FILEINFO_MIME_TYPE);
+            $finfo = new finfo();
+            $extension = $finfo->file($file['tmp_name'], FILEINFO_MIME_TYPE);
             $mimes = ['image/jpeg', 'image/png', 'image/gif'];
             $filename = uniqid("", true) . '.jpg';
             $poid = 5000000;
@@ -46,19 +45,20 @@ use finfo;
                         }
                         $item = $this->pdo->prepare("UPDATE users SET avatar = ? WHERE id = ?");
                         $item->execute([$filename, $this->user->getId()]);
-                        header('Location: ' . $this->router->generate('profile'));
 
-                    } else { header('Location: ' . $this->router->generate('profile')); }
-                } else { throw new Exception('Désolé, le fichier est trop volumineux'); }
+                    } else {
+                        throw new Exception("L'upload de l'image a échoué");
+                    }
+                } else { throw new Exception('Le fichier est trop volumineux'); }
             } else { throw new Exception('Désolé, seuls les fichiers JPG, JPEG, PNG et GIF sont autorisés'); }
         }
 
         /**
          * Redimenssionne l'image
-         * @param mixed $uploadFile
+         * @param mixed $uploadFile Chemin de l'image sur le serveur
          * @return void
         */
-        private function resizeCenter($uploadFile) 
+        private function resizeCenter(string $uploadFile) 
         {
             list($width, $height, $type) = getimagesize($uploadFile);
             $newWidth = 400;
@@ -112,19 +112,6 @@ use finfo;
             imagedestroy($newImage);
         }
 
-        /**
-         * Supprime l'avatar si le fichier existe
-         * @param int $id
-         * @param mixed $filename
-         * @return void
-        */
-        public static function detach(int $id, ?string $filename): void
-        {
-            if(file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'users' . DIRECTORY_SEPARATOR . $id . DIRECTORY_SEPARATOR . $filename)) {
-                unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'users' . DIRECTORY_SEPARATOR . $id . DIRECTORY_SEPARATOR . $filename);
-            }
-        }
-
         private function NTECH($uploadFile) 
         {
             list($width, $height, $type) = getimagesize($uploadFile);
@@ -161,7 +148,7 @@ use finfo;
                     $image = imagecreatefromgif($uploadFile);
                     break; 
                 default:
-                    header('Location: ' . $this->router->generate('profile')); exit;
+                throw new Exception('Impossible de redimensionner cette image');
             }
 
             imagecopyresampled($newImage, $image, 0, 0, $srcx, $srcY, $width, $width, $squareSize, $squareSize);

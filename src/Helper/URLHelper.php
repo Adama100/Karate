@@ -28,7 +28,7 @@
                 throw new \Exception("Le paramètre dans l'url '$name' n'est pas un entier");
             }
             return (int)$_GET[$name];
-        } 
+        }
 
         public static function getPositiveInt(string $name, ?int $default = null): ?int
         {

@@ -1,98 +1,47 @@
 ### KARATE
 
 ## bin
+- npm run prod
+- npm run dev
+- ./vendor/bin/phpunit tests
+- ./node_modules/.bin/mjml --watch mail.mjml
+- php -S localhost:8000 -t public
+- ./bin/mailpit
 
-npm run prod
-npm run dev
-./vendor/bin/phpunit tests
-./node_modules/.bin/mjml --watch mail.mjml
-php -S localhost:8000 -t public
-./bin/mailpit
-git remote add origin git@github.com:Adama100/Karate.git
-git branch -M main
-git push -u origin main
+**Github**
+Après le ssh, On crée un nouveau Repository, on aura le chemin du repère :
+- git remote add origin git@github.com:Adama100/App.git : Obtenu sur github, mais il est executer dans le dossier Remote
+- git push -u origin master : Permettra d'envoyer vers le github
 
+- git remote add origin git@github.com:Adama100/Karate.git
+- git branch -M main
+- git push -u origin main
+
+- git remote add origin <ssh> ou <chemin_dossier_remote> : Permet de rajouter un remote, mais on le fait dans notre projet
+- git remote -v : La liste des remotes
+- git branch -r : L'ensemble des branches qui sont disponible a distance
+- git branch -d master : Supprime la branche dans notre remote
+- git push origin main : Pour envoyer mes modifications a distance
+- git push origin --delete master : Supprime la branche a distance
+- git pull origin main : Permet de recupérer les nouveau commit qui ont été fais sur le remote origin et sur la branche main
+- git clone <chemin_du_remote:ssh> <nom_du_chemin_ou_cloner> : Pour cloner un dépot
+- git pull --rebase origin master : Recupère les nouveau commit qui ont été fais sur le remote origin et sur la branche master, le rebase donne une syntaxe plus propre .. Va mettre le commit précédent ensuite mettre le notre sinon fera un système de branch ou ça parle de merge ..
+- git clone <chemin_du_remote> <nom_du_chemin_ou_cloner> --depth 1 : Permet de recuperer une profondeur dans l'historique, le nombre de commit qu'il va récupérer
+
+**Les Fonctions d'agregats**
+- avg() -- Permet de faire une moyenne
+- count() -- Permet de compter le nombre d'éléments que l'on a, count(*) nous les enregistrement même celle qui sont null
+- max() -- Permet de récupérer la valeur maximale que l'on a
+- min() -- Permet de récupérer la valeur minimale que l'on a
+- sum() -- Permet de faire une somme
+- total() -- Permet de faire une somme, mais va utiliser un système avec les virgules
+- CONCAT() -- Permet de concatener Ex : SELECT CONCAT(nom, ' ', prenom) 
 
 
 ## Fonctionnalités principales du système
 
-- Les pratiquants peuvent s'inscrire avec les informations suivantes : nom, prénom, email, mot de passe, âge, ceinture actuelle, et type d'utilisateur (maître de club ou pratiquant).
-
-- Une table club pour lister tous les clubs de karaté avec : nom du club, adresse, contact, maître principal, et description.
-
 - Les pratiquants peuvent s’abonner à un club pour devenir membre affilié. Possibilité pour un maître de club de gérer les membres affiliés à son club.
-
 - Chaque pratiquant affilié reçoit un matricule unique (généré automatiquement). Le matricule est lié à l’affiliation et sert de preuve d’officialisation.
-
 - Différenciation des rôles : pratiquants normaux et maîtres de clubs. Les maîtres de clubs peuvent approuver ou refuser des affiliations.
-
 - Ajout de nouveaux clubs : Les maîtres de clubs peuvent ajouter leur club
-
 - Modification des informations d’un club : Les maîtres de clubs peuvent modifier les informations de leur propre club
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## Git
-
-**reset**
-- git reset : Va vider le steging(add)
-- git reset HEAD index.html ou git reset -- .\index.html : Permet de supprimer un fichier de la liste a stéger
-- git reset --hard : Va revenir en arrière sur le derniers commits en supprimant le dernier et va modifié aussi notre dépot pour tout ramener au commit choisi
-- git reset e32bb9(id du commit) : Revient en arrière sur ce commit, mais ça laisse en stéging toutes les modif qui ont été apporté dépuis, mais l'historique avant le commit choisi sera supprimé
-
-**branch**
-- git branch redisign : Créer une branche
-- git checkout redisign : Permet de sauter sur une branche 
-- git add .\index.html : Ajout au stéger 
-- git commit -m "dercomit" : Commit dans la branche
-- git checkout master : Me permet de revenir sur la branche master
-- git merge redisign : Me permet de fusioner la branche redisign a ma barnche principale master
-- git branch -d redisign : Permet de supprimer une branche, il ne me laisse pas faire si il y'a des commits en attentes que je n'ai pas fusioner
-
-**Remote**
-- git init --bare : Initialise un remote 
-- git remote add origin <ssh> ou <chemin_dossier_remote> : Permet de rajouter un remote, mais on le fait dans notre projet
-- git remote -v : La liste des remotes
-- git remote remove NomRemote : Supprime un remote
-- git remote rename origin autrenom : Rennome le nom du remote
-- git branch -r : L'ensemble des branches qui sont disponible a distance
-- git branch -d master : Supprime la branche dans notre remote
-- git push origin master : Pour envoyer mes modifications a distance, master un le nom de la branche qu'on veut envoyer, on le choisi
-- git push origin --delete master : Supprime la branche a distance
-- git pull origin master : Permet de recupérer les nouveau commit qui ont été fais sur le remote origin et sur la branche master
-
-- Pour recuperer a distance :
-    - git clone <chemin_du_remote:ssh> <nom_du_chemin_ou_cloner>
-    - git pull --rebase origin master : Recupère les nouveau commit qui ont été fais sur le remote origin et sur la branche master, le rebase donne une syntaxe plus propre .. Va mettre le commit précédent ensuite mettre le notre sinon fera un système de branch ou ça parle de merge ..
-    - git clone <chemin_du_remote> <nom_du_chemin_ou_cloner> --depth 1 : Permet de recuperer une profondeur dans l'historique, le nombre de commit qu'il va récupérer
-
-* Si on veut faire des git pull en utilisant toujours le rebase : git config --global branch.autosetuprebase always
-* Recommandé de ne pas faire de commit sur notre branch master, travailler toujours sur les branch et utiliser la branch master pour faire syncronisation avec le depot original
-
-
-**Github**
-        - Je m'inscris, je vais dans paramètre > ssh keys
-        - ssh-keygen -t rsa -C "email" : Pour générer une clé shh, après il nous demande une passphrase, qui est une phrase que nous allons utliser lorsque la clé sera utiliser
-        - Je vais me retrouver avec deux clés id_rsa et id_rsa_pub, la clé id_rsa_pubest celle que nous allons envoyé au serveur avec lequel je veux m'authentifié, Ensuite on l'ouvre avec un éditeur de texte, on le copie et vas sur Github et coller la clé
-        - Si on veut savoir si on n'a déjà des clés, on se rend dans mon dossier personnel cd ~/.ssh ou aller dans dossier principale > utilisateur > .ssh
-
-    Après le ssh, On crée un nouveau Repository, on aura le chemin du repère :
-
-        - git remote add origin git@github.com:Adama100/App.git : Obtenu sur github, mais il est executer dans le dossier Remote
-        - git push -u origin master : Permettra d'envoyer vers le github
-
-    Ensuite il peut avoir des ichou (Problème que d'autre ont rencontré), après l'avoir resolu, on nomme les commits du genre git commit -a -m "fixes #1, Ajout de ligne"
-
-    Pour la sécurité, pour ne que tout le monde puisse commit ses modifications sur github, on vas crée un fork qui est miroir du projet que je regarde, nous permet d'avoir les permissions dessus

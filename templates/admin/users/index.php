@@ -1,28 +1,30 @@
 <?php
 
 use App\App;
-use App\Domain\Auth\User;
-use App\Domain\Builder\PaginatedQuery;
-use App\Domain\Builder\QueryBuilder;
-use App\Domain\Security\UserChecker;
-use App\Session;
+use App\Domain\Application\Builder\PaginatedQuery;
+use App\Domain\Application\Builder\QueryBuilder;
+use App\Domain\Application\Session\PHPSession;
+use App\Domain\Auth\Entity\User;
+use App\Domain\Auth\Security\UserChecker;
 
-Session::getSession();
+PHPSession::get();
 UserChecker::AdminCheck($r->generate('login'));
 
     $title = "Administration | Utilisateurs";
+    $nav = "admin.users";
     $pdo = App::getPDO();
 
     $query = (new QueryBuilder($pdo, User::class))
         ->from('users', 'u')
+        ->where("u.role != 'super admin'")
     ;
     if(!empty($_GET['q'])) {
         $query
             ->where("u.username LIKE :name")
             ->setParam('name', '%' . $_GET['q'] . '%');
     }
-    $tableQuery = new PaginatedQuery($query, $_GET);
-    [$data, $pages, $error] = $tableQuery->queryFetchRender();
+    $tableQuery = new PaginatedQuery($query, $_GET, 30);
+    [$users, $pages, $error] = $tableQuery->queryFetchRender();
 
 ?>
 
@@ -41,7 +43,7 @@ UserChecker::AdminCheck($r->generate('login'));
     </form>
 
     <h5 class="display-6 mb-3">Gestion des utilisateurs</h5>
-    <a href="" class="btn btn-primary mb-3">Nouveau</a>
+    <a href="<?= $r->generate('admin.user.new') ?>" class="btn btn-primary mb-3">Nouveau</a>
 
     <div class="table-responsive">
         <table class="table table-striped">
@@ -54,16 +56,16 @@ UserChecker::AdminCheck($r->generate('login'));
                 </tr>
             </thead>
             <tbody>
-                <?php foreach($data as $c): ?>
+                <?php foreach($users as $u): ?>
                 <tr>
-                    <td>#<?= $c->getId() ?></td>
-                    <td><?= $c->getUsername() ?></td>
-                    <td><?= $c->getEmail() ?></td>
+                    <td>#<?= $u->getId() ?></td>
+                    <td><?= $u->getUsername() ?></td>
+                    <td><?= $u->getEmail() ?></td>
                     <td class="d-flex gap-1">
-                        <form action="" method="post">
+                        <form action="<?= $r->generate('admin.user.edit') ?>" method="post">
                             <button type="submit" class="btn btn-primary btn-sm">Editer</button>
                         </form>
-                        <form action="" method="post" onsubmit="return confirm('Voulez vous vraiment supprimer l\'utilisateur')">
+                        <form action="<?= $r->generate('admin.user.delete') ?>" method="post" onsubmit="return confirm('Voulez vous vraiment supprimer l\'utilisateur')">
                             <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
                         </form>
                     </td>

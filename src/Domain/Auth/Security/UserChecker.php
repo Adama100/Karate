@@ -1,14 +1,14 @@
 <?php
 
-    namespace App\Domain\Security;
+    namespace App\Domain\Auth\Security;
 
 use App\App;
-use App\Session;
+use App\Domain\Application\Session\Flash;
 
     class UserChecker {
 
         /**
-         * Demande a l'utilisateur de se connecter
+         * Vérifie si l'utilisateur n'est pas connecté
          * @param string $path
          * @return void
         */
@@ -16,14 +16,14 @@ use App\Session;
         {
             $user = App::getAuth()->user();
             if($user === null) {
-                Session::flash('danger', 'Vous devez vous connecter pour avoir accès à cet espace');
+                Flash::flash('danger', 'Vous devez vous connecter pour avoir accès à cet espace');
                 header('Location: ' . $path);
                 exit;
             }
         }
 
         /**
-         * Empêcher l'utilisateur connecter d'acceder a une section
+         * Empêche l'utilisateur connecté d'acceder a une section
          * @param string $path
          * @return void
         */
@@ -48,7 +48,7 @@ use App\Session;
                 App::getAuth()->requireRole('super admin', 'admin');
             } catch(\Exception $e) {
                 if($flash === true) {
-                    Session::flash('danger', $e->getMessage());
+                    Flash::flash('danger', $e->getMessage());
                     header('Location: ' . $path); exit;
                 }
                 header('Location: ' . $path); exit;
@@ -60,12 +60,15 @@ use App\Session;
          * @param string $path
          * @return void
         */
-        public static function SuperAdminCheck(string $path) 
+        public static function SuperAdminCheck(string $path, $flash = true) 
         {
             try {
                 App::getAuth()->requireRole('super admin');
             } catch(\Exception $e) {
-                Session::flash('danger', $e->getMessage());
+                if($flash === true) {
+                    Flash::flash('danger', $e->getMessage());
+                    header('Location: ' . $path); exit;
+                }
                 header('Location: ' . $path); exit;
             }
         }

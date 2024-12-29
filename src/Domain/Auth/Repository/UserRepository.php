@@ -1,10 +1,11 @@
 <?php
 
-    namespace App\Domain\Auth;
+    namespace App\Domain\Auth\Repository;
 
-use App\Domain\Abstract\Table;
+use App\Domain\Application\Abstract\AbstractTable;
+use App\Domain\Auth\Entity\User;
 
-    final class UserTable extends Table {
+    final class UserRepository extends AbstractTable {
 
         protected $table = "users";
         protected $class = User::class;

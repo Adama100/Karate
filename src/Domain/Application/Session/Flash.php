@@ -1,26 +1,11 @@
 <?php
 
-    namespace App;
+    namespace App\Domain\Application\Session;
 
-    class Session {
-
-        public static $session; 
-
-        private function __construct()
-        {
-            session_start();
-        }
-
-        public static function getSession(): Session
-        {
-            if(!self::$session) {
-                self::$session = new Session();
-            }
-            return self::$session;
-        }
+    class Flash {
 
         /**
-         * Utiliser pour faire des messages flash
+         * Créer un message flash
          * @param string $key
          * @param string $message
          * @return void
@@ -28,15 +13,20 @@
         public static function flash(string $key, string $message): void
         {
             if(session_status() === PHP_SESSION_NONE) {
-                self::getSession();
+                PHPSession::get();
             }
             $_SESSION['flash'][$key] = $message;
         }
 
+        /**
+         * Créer un tableau de messages flash
+         * @param string $message
+         * @return void
+        */
         public static function gflash(string $message): void
         {
             if(session_status() === PHP_SESSION_NONE) {
-                self::getSession();
+                PHPSession::get();
             }
             $_SESSION['gflash'][] = $message;
         }

@@ -19,7 +19,7 @@
 </head>
 <body>
 
-<nav class="navbar navbar-expand-md navbar-light bg-primary mb-3">
+    <nav class="navbar navbar-expand-md navbar-light bg-primary mb-3">
         <div class="container-fluid">
             <a class="navbar-brand" href="<?= $r->generate('admin') ?>">Admin</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#admin" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -28,29 +28,20 @@
             <div class="collapse navbar-collapse" id="admin">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a href="<?= $r->generate('admin.clubs') ?>" class="nav-link <?php if(isset($nav) && $nav === "admin_produits"): ?>active<?php endif; ?>">Clubs</a>
+                        <a href="<?= $r->generate('admin.clubs') ?>" class="nav-link <?php if(isset($nav) && $nav === "admin.clubs"): ?>active<?php endif; ?>">Clubs</a>
                     </li>
-                    <?php if(isset($_SESSION['USER'])): ?>
                     <li class="nav-item">
-                        <a href="<?= $r->generate('out') ?>" class="nav-link">Deconnexion</a>
+                        <a href="<?= $r->generate('admin.users') ?>" class="nav-link <?php if(isset($nav) && $nav === "admin.users"): ?>active<?php endif; ?>">Utilisateurs</a>
                     </li>
-                    <?php endif; ?>
+                    <li class="nav-item">
+                        <a href="<?= $r->generate('logout') ?>" class="nav-link">Deconnexion</a>
+                    </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <div class="container mt-2">
-        <?php if(isset($_SESSION['flash'])): ?>
-            <?php foreach($_SESSION['flash'] as $type => $message): ?>
-                <div class="alert-container <?= $type ?>">
-                    <span class="alert-text"><?= $message ?></span>
-                    <button class="close-alert">&times;</button>
-                </div>
-            <?php endforeach; ?>
-            <?php unset($_SESSION['flash']) ?>
-        <?php endif; ?>
-    </div>
+    <?php require 'flash.php' ?>
 
     <main>
         <div class="mt-4">
@@ -58,12 +49,5 @@
         </div>
     </main>
 
-    <footer>
-        <?php if(defined('DEBUG_TIME')): ?>
-            <div class="p-4">
-                Page généré en <?= round(1000 * (microtime(true) - DEBUG_TIME)) ?> ms
-            </div>
-        <?php endif ?>
-    </footer>
 </body>
 </html>

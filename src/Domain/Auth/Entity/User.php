@@ -1,6 +1,6 @@
 <?php
 
-    namespace App\Domain\Auth;
+    namespace App\Domain\Auth\Entity;
 
     class User {
 
@@ -15,15 +15,7 @@
         private $phone_number;
         private $address;
         private $bio;
-        private $token;
-        private $sign_at;
-        private $reset_password_token;
-        private $reset_password_at;
-        private $chang_mail;
-        private $message_at;
-        private $delete_requested_at; 
-        private $failed_attempts;
-        private $locked_until;
+        private $sign_token;
 
         public function getId(): ?int
         {
@@ -136,23 +128,12 @@
 
         public function getToken(): ?string
         {
-            return $this->token;
+            return $this->sign_token;
         }
 
-        public function setToken(string $sign_token): self
+        public function setToken(string $token): self
         {
-            $this->token = $sign_token;
-            return $this;
-        }
-
-        public function getLockedUntil(): ?string
-        {
-            return $this->locked_until;
-        }
-
-        public function setLockedUntil(string $locked_until): self
-        {
-            $this->locked_until = $locked_until;
+            $this->sign_token = $token;
             return $this;
         }
 
